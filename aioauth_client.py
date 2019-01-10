@@ -145,9 +145,11 @@ class Client(object, metaclass=ClientRegistry):
                 async with aiohttp.ClientSession(loop=loop) as session:
                     async with session.request(method, url, **kwargs) as response:
 
+                        text = await response.text()
                         if response.status / 100 > 2:
                             raise web.HTTPBadRequest(
-                                reason='HTTP status code: %s' % response.status)
+                                reason='HTTP status code: %s' % response.status,
+                                text=text)
 
                         if 'json' in response.headers.get('CONTENT-TYPE'):
                             data = await response.json()
